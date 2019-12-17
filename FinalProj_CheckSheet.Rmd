@@ -2,9 +2,9 @@
 title: 'Final Project: Guidance Document'
 author: "Angelo Kwak"
 date: "Due December 16, 2019"
-output:
-  pdf_document: default
-  html_notebook: default
+output: html_notebook
+  #pdf_document: default
+  #html_notebook
 ---
 
 # Purpose

@@ -121,7 +121,7 @@ rating_count_standard <- geom_hline(yintercept = 1000)
 paid_frame+rating_count_standard
 ```
 
-This shows the same analysis as above for Social Networking applications. There are a significantly smaller number of 
+This shows the same analysis as above for Social Networking applications. There are a significantly smaller number of these.
 ```{r}
 Paid_Social <-
   Highest_Rated_Social %>%
@@ -144,7 +144,7 @@ Another point that I thought would be interesting to see how many descriptions f
   arrange(desc(user_rating))
 ```
 
-The name of my application contains the word "Party". One final thing I thought would be interesting would be to find the number of music or social applications that also have "Party" in their title. As seen below, the conclusion is that not many apps in these specific categories use "Party" in their name. 
+The name of my application contains the word "Party". One final thing I thought would be interesting would be to find the number of music or social applications that also have "Party" in their title. As seen below, the conclusion is that not many apps in these specific categories use "Party" in their name.
 ```{r}
 Find_Names <- function(data) {
   num_of_titles <-
