@@ -45,7 +45,7 @@ App_Store_Description_Data %>%
   sample_n(size = 10)
 ```
 # General Analysis
-The first thing that I wanted to do with this dataset is gather some general statistics about the apps within the App Store.
+The first thing that I wanted to do with this dataset is gather some general statistics about the apps within the App Store. Below shows several mean values calculated based on this data.
 ```{r}
 #This code displays the mean size of each app, app rating, and number of languages supported within an app.
 App_Store_Data %>%
@@ -69,18 +69,8 @@ App_Categories
 ggplot(data=App_Categories,aes(x=prime_genre,y=num_on_store ,fill=prime_genre))+geom_bar(stat='identity',position='stack', width=.9)+theme(axis.text.x=element_text(angle = 90, vjust = 0.5))+ xlab('App Category') + ylab('Number on Store')
 ```
 
-
-```{r}
-
-#layer1 <- geom_point(data = App_Store_Data, aes(shape = user_rating))
-#layer2 <- geom_point(data = App_Store_Data, aes(shape = user_rating_ver))
-
-#App_Store_Data %>%
- # ggplot(aes(x = id, y = user_rating))+geom_point()
-
-```
-
 # Specific classification for Music and Social Media
+Because my application is specifically related to music and social networking, I decided to focus on these categories. 
 ```{r}
 #music data
 Music_App_Data <-
@@ -107,17 +97,17 @@ Highest_Rated_Music <-
   Music_With_Desc %>%
   filter(user_rating >= 3.5) %>%
   arrange(desc(rating_count_tot)) %>%
-  select(track_name, size_bytes, user_rating, rating_count_tot, price, app_desc)
+  select(track_name, size_bytes, user_rating, rating_count_tot, rating_count_ver, price, app_desc)
 
 #get highest rated social media app names
 Highest_Rated_Social <-
   Social_With_Desc %>%
   filter(user_rating >= 3.5) %>%
   arrange(desc(rating_count_tot)) %>%
-  select(track_name, size_bytes, user_rating, rating_count_tot, price, app_desc)
+  select(track_name, size_bytes, user_rating, user_rating_ver, rating_count_tot, rating_count_ver, price, app_desc)
 ```
 
-The following graphs show a how the number of user ratings ranges based on the price. From this, I was able to view how the number of reviews can impact the overall rating of paid apps.
+The following graphs show a how the number of user ratings ranges based on the price. From this, I was able to view how the number of reviews can impact the overall rating of paid apps, and how the difference in those prices can have an effect. Each of the graphs below allowed me to view the number of apps that have a significantly higher number of reviews, and how those app ratings are impacted.
 ```{r}
 #compare ratings and number of ratings for paid apps. 
 Paid_Music <-
@@ -125,23 +115,46 @@ Paid_Music <-
   filter(price > 0.00)
 
 paid_frame <- ggplot(data=Paid_Music,aes(x=price,y=rating_count_tot))+geom_point()+aes(colour=user_rating)+scale_y_log10() 
-
+#This specifically sets a layer above the graph at 1000 reviews.
 rating_count_standard <- geom_hline(yintercept = 1000)
-
+#This combines the frame and line layers. 
 paid_frame+rating_count_standard
 ```
 
-
+This shows the same analysis as above for Social Networking applications. There are a significantly smaller number of 
 ```{r}
 Paid_Social <-
   Highest_Rated_Social %>%
   filter(price > 0.00)
-
+#compare ratings and number of ratings for paid apps.
 paid_frame <- ggplot(data=Paid_Social,aes(x=price,y=rating_count_tot))+geom_point()+aes(colour=user_rating)+scale_y_log10() 
-
+#This specifically sets a layer above the graph at 1000 reviews.
 rating_count_standard <- geom_hline(yintercept = 1000)
-
+#This combines the frame and line layers. 
 paid_frame+rating_count_standard
 ```
 
 
+Another point that I thought would be interesting to see how many descriptions for higher rated music applications actually contain the word "music". Doing this can allow me to improve the description of my application. 
+```{r}
+#Descs_with_music <-
+  Highest_Rated_Music %>%
+  filter(grepl("music", app_desc)) %>%
+  select(track_name, user_rating, app_desc) %>%
+  arrange(desc(user_rating))
+```
+
+The name of my application contains the word "Party". One final thing I thought would be interesting would be to find the number of music or social applications that also have "Party" in their title. As seen below, the conclusion is that not many apps in these specific categories use "Party" in their name. 
+```{r}
+Find_Names <- function(data) {
+  num_of_titles <-
+    data %>%
+    filter(grepl("party", track_name)) %>%
+    summarise(num_of_apps = n())
+  
+  return(num_of_titles)
+}
+
+Find_Names(Social_Network_App_Data)
+Find_Names(Music_App_Data)
+```
