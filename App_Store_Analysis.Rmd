@@ -1,0 +1,119 @@
+---
+title: "App_Store_Analysis"
+author: Angelo Kwak
+date: 12/16/2019
+output: html_notebook
+---
+
+Purpose:
+The purpose of this project is to analyze a number of trends in the Apple App Store. I chose to do this project using this data because I'm interested in mobile app development and currently have an application on the App Store. Specifically, my application is for music and social media, so I will be heavily analyzing these genres specifically. 
+
+```{r}
+# clean up workspace environment
+rm(list = ls())
+#Packages
+library(mosaic)
+library(tidyverse)
+library(DataComputing)
+library(party)
+```
+
+The chunk below loads all data from the two datasets regarding the Apple App Store
+```{r}
+#This dataset contains a number of analytics about over 7000 applications on the App Store.
+#Information includes rating, price, genre, etc.
+
+dataset_1 <- 'C:/Users/angel/Dropbox/Penn State/STAT 184/Project/App_Store_Analysis/AppleStore.csv'
+
+App_Store_Data <- read.csv(file = dataset_1, header=TRUE, sep=",")
+
+#This dataset contains a number of analytics about over 7000 applications on the App Store.
+#Information includes rating, price, genre, etc.
+dataset_2 <- 'C:/Users/angel/Dropbox/Penn State/STAT 184/Project/App_Store_Analysis/appleStore_description.csv'
+
+App_Store_Description_Data <- read.csv(file = dataset_2, header=TRUE, sep=",")
+```
+
+## Sample of the App Store Dataset
+```{r}
+App_Store_Data %>%
+  sample_n(size = 10)
+```
+## Sample of the Description Dataset
+```{r}
+App_Store_Description_Data %>%
+  sample_n(size = 10)
+```
+# General Analysis
+The first thing that I wanted to do with this dataset is gather some general statistics about the apps within the App Store.
+```{r}
+#This code displays the mean size of each app, app rating, and number of languages supported within an app.
+App_Store_Data %>%
+  summarise(num_apps = n(),
+            mean_app_size = mean(size_bytes),
+            mean_app_rating = mean(user_rating),
+            mean_supported_languages = mean(lang.num))
+```
+
+## App Store Breakdown
+The following is a general breakdown of the categories of apps in the App Store. Below is a chart containing the specific number of apps in each category, in addition to a plot showing these numbers. This plot shows a more visually appealing way of looking at just how diverse the App Store really is. Based on this data, it's very clear that games take up a very large population in the App Store. 
+```{r}
+App_Categories <- App_Store_Data %>%
+  group_by(prime_genre) %>%
+  summarise(num_on_store = n())
+
+App_Categories
+```
+
+```{r}
+ggplot(data=App_Categories,aes(x=prime_genre,y=num_on_store ,fill=prime_genre))+geom_bar(stat='identity',position='stack', width=.9)+theme(axis.text.x=element_text(angle = 90, vjust = 0.5))+ xlab('App Category') + ylab('Number on Store')
+```
+
+
+```{r}
+
+#layer1 <- geom_point(data = App_Store_Data, aes(shape = user_rating))
+#layer2 <- geom_point(data = App_Store_Data, aes(shape = user_rating_ver))
+
+#App_Store_Data %>%
+ # ggplot(aes(x = id, y = user_rating))+geom_point()
+
+```
+## Rating vs Category
+```{r}
+
+```
+
+
+
+Specific classification for music and social media
+```{r}
+#music data
+Music_App_Data <-
+  App_Store_Data %>%
+  filter(prime_genre == 'Music')
+
+#social network data
+Social_Network_App_Data <-
+  App_Store_Data %>%
+  filter(prime_genre == 'Social Networking')
+
+
+#get highest rated music app names
+
+
+#get highest rated social media app names
+
+
+#compare ratings of free vs paid for each. 
+
+
+#Use ML to take the user_rating_ver (rating of current app version) and predict the user_rating (overall app version) for each category
+
+
+
+```
+
+
+
+
