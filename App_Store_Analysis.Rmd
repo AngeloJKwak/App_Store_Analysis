@@ -79,14 +79,8 @@ ggplot(data=App_Categories,aes(x=prime_genre,y=num_on_store ,fill=prime_genre))+
  # ggplot(aes(x = id, y = user_rating))+geom_point()
 
 ```
-## Rating vs Category
-```{r}
 
-```
-
-
-
-Specific classification for music and social media
+# Specific classification for Music and Social Media
 ```{r}
 #music data
 Music_App_Data <-
@@ -98,22 +92,56 @@ Social_Network_App_Data <-
   App_Store_Data %>%
   filter(prime_genre == 'Social Networking')
 
+#join the music data with it's description 
+Music_With_Desc <- Music_App_Data %>%
+left_join(App_Store_Description_Data, 'id' = 'id')
 
-#get highest rated music app names
+#join social network data withn its description
+Social_With_Desc <- Social_Network_App_Data %>%
+left_join(App_Store_Description_Data, 'id' = 'id')
+```
 
+```{r}
+#get most rated and highest rated music app names
+Highest_Rated_Music <-
+  Music_With_Desc %>%
+  filter(user_rating >= 3.5) %>%
+  arrange(desc(rating_count_tot)) %>%
+  select(track_name, size_bytes, user_rating, rating_count_tot, price, app_desc)
 
 #get highest rated social media app names
+Highest_Rated_Social <-
+  Social_With_Desc %>%
+  filter(user_rating >= 3.5) %>%
+  arrange(desc(rating_count_tot)) %>%
+  select(track_name, size_bytes, user_rating, rating_count_tot, price, app_desc)
+```
 
+The following graphs show a how the number of user ratings ranges based on the price. From this, I was able to view how the number of reviews can impact the overall rating of paid apps.
+```{r}
+#compare ratings and number of ratings for paid apps. 
+Paid_Music <-
+  Highest_Rated_Music %>%
+  filter(price > 0.00)
 
-#compare ratings of free vs paid for each. 
+paid_frame <- ggplot(data=Paid_Music,aes(x=price,y=rating_count_tot))+geom_point()+aes(colour=user_rating)+scale_y_log10() 
 
+rating_count_standard <- geom_hline(yintercept = 1000)
 
-#Use ML to take the user_rating_ver (rating of current app version) and predict the user_rating (overall app version) for each category
-
-
-
+paid_frame+rating_count_standard
 ```
 
 
+```{r}
+Paid_Social <-
+  Highest_Rated_Social %>%
+  filter(price > 0.00)
+
+paid_frame <- ggplot(data=Paid_Social,aes(x=price,y=rating_count_tot))+geom_point()+aes(colour=user_rating)+scale_y_log10() 
+
+rating_count_standard <- geom_hline(yintercept = 1000)
+
+paid_frame+rating_count_standard
+```
 
 
